@@ -1,0 +1,44 @@
+@import "tailwindcss";
+
+@theme {
+  /* Farbpalette aus der Blaupause */
+  --color-cream: #f3eee2;
+  --color-cream-light: #faf6ec;
+  --color-sand: #e8e1d0;
+  --color-sage: #a7b6a1;
+  --color-forest: #2f4a3b;
+  --color-forest-dark: #263d31;
+  --color-ink: #141414;
+  --color-line: #e4dbc5;
+  --color-wood: #e7bc8e;
+  --color-wood-dark: #cf9d6c;
+  --color-outline: #2b2521;
+
+  --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+  /*
+   * Skalierungseinheit: 1u = 1px auf der 1920x1080-Blaupause.
+   * Dadurch skaliert das Menü wie eine Spiel-Startseite mit dem Viewport.
+   */
+  --u: min(calc(100vw / 1920), calc(100vh / 1080));
+
+  --menu-x: calc(150 * var(--u));
+  --menu-title: max(2.75rem, calc(118 * var(--u)));
+  --menu-sub: max(1.125rem, calc(38 * var(--u)));
+
+  --btn-w: min(100%, max(300px, calc(510 * var(--u))));
+  --btn-h: max(60px, calc(108 * var(--u)));
+  --btn-gap: max(12px, calc(27 * var(--u)));
+  --btn-text: max(1.125rem, calc(36 * var(--u)));
+  --btn-radius: max(14px, calc(20 * var(--u)));
+  --btn-icon: max(26px, calc(44 * var(--u)));
+  --btn-icon-x: max(22px, calc(48 * var(--u)));
+}
+
+html,
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+}

@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AVL Tree Tutorial</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="tree-container">
+        <svg class="tree-lines" viewBox="0 0 700 400"
+             preserveAspectRatio="none">
+            <line x1="350" y1="100" x2="225" y2="230" />
+            <line x1="350" y1="100" x2="475" y2="230" />
+        </svg>
+
+        <div class="node root" draggable="true" data-value="25">25</div>
+        <div class="node left-child" draggable="true" data-value="20">20</div>
+        <div class="node right-child" draggable="true" data-value="30">30</div>
+    </main>
+
+    <script>
+        const nodes = document.querySelectorAll(".node");
+
+        let draggedNode = null;
+
+        nodes.forEach(node => {
+            node.addEventListener("dragstart", (event) => {
+                draggedNode = node;
+
+                event.dataTransfer.effectAllowed = "move";
+                event.dataTransfer.setData("text/plain", node.dataset.value);
+
+                node.classList.add("dragging");
+            });
+
+            node.addEventListener("dragend", () => {
+                node.classList.remove("dragging");
+                nodes.forEach(n => n.classList.remove("drag-over"));
+                draggedNode = null;
+            });
+
+            node.addEventListener("dragover", (event) => {
+                event.preventDefault();
+
+                if (draggedNode && draggedNode !== node) {
+                    node.classList.add("drag-over");
+                }
+            });
+
+            node.addEventListener("dragleave", () => {
+                node.classList.remove("drag-over");
+            });
+
+            node.addEventListener("drop", (event) => {
+                event.preventDefault();
+                node.classList.remove("drag-over");
+
+                if (!draggedNode || draggedNode === node) return;
+
+                // Werte der beiden Knoten tauschen
+                const draggedValue = draggedNode.dataset.value;
+                const targetValue = node.dataset.value;
+
+                draggedNode.dataset.value = targetValue;
+                node.dataset.value = draggedValue;
+
+                draggedNode.textContent = targetValue;
+                node.textContent = draggedValue;
+
+                // Kleine Ease-in-out-Animation
+                [draggedNode, node].forEach(n => {
+                    n.classList.remove("swap-animation");
+
+                    // Animation zuverlässig neu starten
+                    void n.offsetWidth;
+
+                    n.classList.add("swap-animation");
+                });
+
+                draggedNode = null;
+            });
+        });
+    </script>
+
+</body>
+</html>
