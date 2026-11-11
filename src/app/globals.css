@@ -13,6 +13,10 @@
   --color-wood: #e7bc8e;
   --color-wood-dark: #cf9d6c;
   --color-outline: #2b2521;
+  /* Levelscreen */
+  --color-sage-light: #cbd0b8;
+  --color-blush: #f1e6da;
+  --color-bar: #f8f2e9;
 
   --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
 }
@@ -35,6 +39,21 @@
   --btn-radius: max(14px, calc(20 * var(--u)));
   --btn-icon: max(26px, calc(44 * var(--u)));
   --btn-icon-x: max(22px, calc(48 * var(--u)));
+
+  /* Levelscreen (Maße der 1920x1080-Blaupause, mit Untergrenzen für kleine Screens) */
+  --lvl-radius: max(14px, calc(22 * var(--u)));
+  --lvl-text: max(1.125rem, calc(40 * var(--u)));
+  --lvl-title: max(1.5rem, calc(64 * var(--u)));
+  --lvl-icon: max(24px, calc(44 * var(--u)));
+  --lvl-btn-h: max(52px, calc(108 * var(--u)));
+  --lvl-action-w: max(150px, calc(306 * var(--u)));
+  --lvl-side-w: max(72px, calc(213 * var(--u)));
+  --lvl-side-h: max(60px, calc(155 * var(--u)));
+  --lvl-side-icon: max(32px, calc(88 * var(--u)));
+  --lvl-panel-w: calc(490 * var(--u));
+  --lvl-panel-h: calc(570 * var(--u));
+  --lvl-panel-head: max(56px, calc(105 * var(--u)));
+  --lvl-panel-text: max(1.125rem, calc(36 * var(--u)));
 }
 
 html,
