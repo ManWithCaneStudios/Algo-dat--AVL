@@ -19,6 +19,19 @@
   --color-bar: #f8f2e9;
 
   --font-sans: var(--font-nunito), ui-sans-serif, system-ui, sans-serif;
+
+  /* Einblenden von Dialog und Tutorialtext */
+  --animate-fade-up: fade-up 250ms ease-out both;
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
 }
 
 :root {

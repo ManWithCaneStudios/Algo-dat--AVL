@@ -25,6 +25,7 @@ npm run lint    # ESLint
 - `src/app/{tutorial,kapitel,einstellungen,beenden}/page.tsx` – Platzhalterseiten für die Menüpunkte
 - `src/components/MenuButton.tsx` – Menü-Button der Startseite
 - `src/components/CatTreeScene.tsx` – Illustration (Kratzbaum als SVG, Katze und Pflanze als Bilder)
+- `src/components/level/` – Levelscreen (`LevelScreen`), Aufgaben-Panel (`TaskPanel`), Einführungsdialog der Tutorialkatze (`TutorialDialog`), Hintergrund
 - `src/app/globals.css` – Tailwind-Theme (Farben, Schrift) und Skalierungsvariablen der Startseite
 - `public/assets/` – zugeschnittene Bild-Assets (Katze, Pflanze, Kratzbaumteile)
 - `design/blueprint-start.png` – Blaupause der Startseite

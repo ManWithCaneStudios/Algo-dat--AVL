@@ -1,11 +1,17 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
 import { CircleHelp, Code, House } from "lucide-react";
 import LevelBackground from "./LevelBackground";
 import TaskPanel from "./TaskPanel";
+import TutorialDialog from "./TutorialDialog";
 
 type LevelScreenProps = {
   level: number;
   title: string;
+  /** Einführungstexte der Tutorialkatze; erscheinen beim Betreten des Levels */
+  tutorialSteps?: string[];
   /** Inhalt des Aufgaben-Panels */
   task?: React.ReactNode;
   /** Inhalt des zentralen Arbeitsbereichs (z. B. der AVL-Baum) */
@@ -27,9 +33,18 @@ const actionButton =
  * Hilfe-/Code-Buttons und die Aktionen Rückgängig / Bestätigen.
  *
  * Ab `lg` liegt alles absolut nach der 1920x1080-Blaupause, darunter wird
- * der Inhalt untereinander gestapelt.
+ * der Inhalt untereinander gestapelt. Beim Betreten öffnet sich der
+ * Einführungsdialog der Tutorialkatze; der Hilfe-Button zeigt ihn erneut.
  */
-export default function LevelScreen({ level, title, task, children }: LevelScreenProps) {
+export default function LevelScreen({
+  level,
+  title,
+  tutorialSteps = [],
+  task,
+  children,
+}: LevelScreenProps) {
+  const [tutorialOpen, setTutorialOpen] = useState(tutorialSteps.length > 0);
+
   return (
     <main className="relative isolate flex flex-1 flex-col text-ink lg:h-dvh lg:overflow-hidden">
       <LevelBackground className="absolute inset-0 -z-10 h-full w-full" />
@@ -68,8 +83,10 @@ export default function LevelScreen({ level, title, task, children }: LevelScree
       <div className="mx-4 mt-4 flex gap-3 lg:absolute lg:right-[calc(30*var(--u))] lg:top-[calc(200*var(--u))] lg:m-0 lg:flex-col lg:gap-[calc(25*var(--u))]">
         <button
           type="button"
-          aria-label="Hilfe"
-          className={`${squareButton} h-(--lvl-side-h) flex-1 lg:w-(--lvl-side-w) lg:flex-none`}
+          aria-label="Hilfe: Einführung erneut anzeigen"
+          onClick={() => setTutorialOpen(true)}
+          disabled={tutorialSteps.length === 0}
+          className={`${squareButton} h-(--lvl-side-h) flex-1 disabled:cursor-not-allowed disabled:opacity-50 lg:w-(--lvl-side-w) lg:flex-none`}
         >
           <CircleHelp aria-hidden="true" strokeWidth={1.5} className="size-(--lvl-side-icon)" />
         </button>
@@ -97,6 +114,12 @@ export default function LevelScreen({ level, title, task, children }: LevelScree
           Bestätigen
         </button>
       </div>
+
+      <TutorialDialog
+        steps={tutorialSteps}
+        open={tutorialOpen}
+        onClose={() => setTutorialOpen(false)}
+      />
     </main>
   );
 }
