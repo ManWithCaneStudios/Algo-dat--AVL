@@ -72,8 +72,9 @@ export default function TutorialDialog({ steps, open, onClose }: TutorialDialogP
         <Image
           src="/assets/plant-small.png"
           alt=""
-          width={179}
-          height={313}
+          width={480}
+          height={843}
+          sizes="8vw"
           priority
           className="pointer-events-none absolute -top-[calc(40*var(--u))] -left-[calc(45*var(--u))] hidden w-[calc(150*var(--u))] md:block"
         />
@@ -83,8 +84,9 @@ export default function TutorialDialog({ steps, open, onClose }: TutorialDialogP
           <Image
             src="/assets/cat-tutor.png"
             alt="Tutorialkatze mit Brille und Halstuch"
-            width={289}
-            height={462}
+            width={900}
+            height={1415}
+            sizes="(min-width: 768px) 16vw, 140px"
             priority
             className="h-auto w-[140px] md:w-[calc(290*var(--u))]"
           />
@@ -115,8 +117,9 @@ export default function TutorialDialog({ steps, open, onClose }: TutorialDialogP
                     src={active ? "/assets/paw-active.png" : "/assets/paw.png"}
                     alt={`Schritt ${i + 1}${active ? " (aktuell)" : done ? " (erledigt)" : ""}`}
                     aria-current={active ? "step" : undefined}
-                    width={100}
-                    height={100}
+                    width={400}
+                    height={400}
+                    sizes="(min-width: 768px) 5vw, 44px"
                     className={`size-[max(44px,calc(95*var(--u)))] transition-opacity duration-300 ${done ? "opacity-70" : ""}`}
                   />
                 </li>
