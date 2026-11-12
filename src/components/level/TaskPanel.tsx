@@ -49,7 +49,7 @@ export default function TaskPanel({
       <div
         id={bodyId}
         hidden={!open}
-        className="flex min-h-0 flex-1 flex-col rounded-(--lvl-radius) bg-cream-light p-[calc(var(--lvl-icon)*1.4)]"
+        className="flex min-h-0 flex-1 flex-col overflow-y-auto rounded-(--lvl-radius) bg-cream-light p-[calc(var(--lvl-icon)*1.4)]"
       >
         {children}
       </div>

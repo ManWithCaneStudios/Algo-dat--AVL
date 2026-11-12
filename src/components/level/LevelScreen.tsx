@@ -16,6 +16,13 @@ type LevelScreenProps = {
   task?: React.ReactNode;
   /** Inhalt des zentralen Arbeitsbereichs (z. B. der AVL-Baum) */
   children?: React.ReactNode;
+  onUndo?: () => void;
+  onConfirm?: () => void;
+  undoDisabled?: boolean;
+  confirmDisabled?: boolean;
+  wideWorkspace?: boolean;
+  onDevSkip?: () => void;
+  confirmLabel?: string;
 };
 
 const squareButton =
@@ -42,18 +49,35 @@ export default function LevelScreen({
   tutorialSteps = [],
   task,
   children,
+  onUndo,
+  onConfirm,
+  undoDisabled = false,
+  confirmDisabled = false,
+  wideWorkspace = false,
+  onDevSkip,
+  confirmLabel = "Bestätigen",
 }: LevelScreenProps) {
   const [tutorialOpen, setTutorialOpen] = useState(tutorialSteps.length > 0);
 
   return (
     <main className="relative isolate flex flex-1 flex-col text-ink lg:h-dvh lg:overflow-hidden">
       <LevelBackground className="absolute inset-0 -z-10 h-full w-full" />
+      {process.env.NODE_ENV === "development" && onDevSkip && (
+        <button
+          type="button"
+          onClick={() => { setTutorialOpen(false); onDevSkip(); }}
+          title="Aktuelles Teillevel überspringen"
+          className="fixed top-2 right-2 z-[60] rounded-lg border border-forest/30 bg-cream-light px-3 py-1.5 text-xs font-bold text-forest shadow-sm hover:bg-sage-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+        >
+          Dev: Weiter →
+        </button>
+      )}
 
       {/* Topbar */}
-      <header className="relative flex min-h-[max(72px,calc(170*var(--u)))] items-center rounded-b-[calc(var(--lvl-radius)*1.3)] bg-bar px-[max(16px,calc(35*var(--u)))] shadow-[0_10px_30px_-18px_rgba(20,20,20,0.4)]">
+      <header className="relative flex min-h-[max(64px,calc(120*var(--u)))] shrink-0 items-center rounded-b-(--lvl-radius) bg-bar px-[max(16px,calc(35*var(--u)))] shadow-[0_10px_30px_-18px_rgba(20,20,20,0.4)]">
         <Link
           href="/"
-          className="relative z-10 flex h-(--lvl-btn-h) items-center gap-[calc(var(--lvl-icon)*0.5)] rounded-(--lvl-radius) bg-forest px-[calc(var(--lvl-icon)*0.9)] text-(length:--lvl-text) font-medium text-cream-light transition-[background-color,transform] duration-150 hover:bg-forest-dark active:scale-[0.985] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-forest lg:w-[calc(305*var(--u))]"
+          className="relative z-10 flex h-(--lvl-btn-h) w-(--lvl-action-w) items-center gap-[calc(var(--lvl-icon)*0.3)] rounded-(--lvl-radius) bg-forest px-[calc(var(--lvl-icon)*0.9)] text-(length:--lvl-text) font-medium text-cream-light transition-[background-color,transform] duration-150 hover:bg-forest-dark active:scale-[0.985] focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-forest"
         >
           <House aria-hidden="true" strokeWidth={1.75} className="size-(--lvl-icon)" />
           Menü
@@ -67,20 +91,20 @@ export default function LevelScreen({
       </h1>
 
       {/* Aufgabe */}
-      <TaskPanel className="mx-4 mt-4 lg:absolute lg:left-[calc(62*var(--u))] lg:top-[calc(215*var(--u))] lg:m-0 lg:h-(--lvl-panel-h) lg:w-(--lvl-panel-w)">
+      <TaskPanel className="mx-4 mt-4 lg:absolute lg:left-[calc(35*var(--u))] lg:top-[max(84px,calc(196*var(--u)))] lg:m-0 lg:h-(--lvl-panel-h) lg:w-(--lvl-panel-w)">
         {task}
       </TaskPanel>
 
       {/* Arbeitsbereich */}
       <section
         aria-label="Arbeitsbereich"
-        className="relative mx-4 mt-4 min-h-[40vh] flex-1 lg:absolute lg:inset-x-[calc(600*var(--u))] lg:top-[calc(200*var(--u))] lg:bottom-[calc(170*var(--u))] lg:m-0 lg:min-h-0"
+        className={`relative mx-4 mt-4 min-h-[40vh] flex-1 lg:absolute lg:top-[max(84px,calc(150*var(--u)))] lg:bottom-[max(84px,calc(140*var(--u)))] lg:m-0 lg:min-h-0 ${wideWorkspace ? "lg:left-[calc(555*var(--u))] lg:right-[calc(200*var(--u))]" : "lg:inset-x-[calc(555*var(--u))]"}`}
       >
         {children}
       </section>
 
       {/* Hilfe / Code */}
-      <div className="mx-4 mt-4 flex gap-3 lg:absolute lg:right-[calc(30*var(--u))] lg:top-[calc(200*var(--u))] lg:m-0 lg:flex-col lg:gap-[calc(25*var(--u))]">
+      <div className="mx-4 mt-4 flex gap-3 lg:absolute lg:right-[calc(96*var(--u))] lg:top-[max(84px,calc(200*var(--u)))] lg:m-0 lg:flex-col lg:gap-[calc(24*var(--u))]">
         <button
           type="button"
           aria-label="Hilfe: Einführung erneut anzeigen"
@@ -93,6 +117,7 @@ export default function LevelScreen({
         <button
           type="button"
           aria-label="Code anzeigen"
+          disabled
           className={`${squareButton} h-(--lvl-side-h) flex-1 lg:w-(--lvl-side-w) lg:flex-none`}
         >
           <Code aria-hidden="true" strokeWidth={1.5} className="size-(--lvl-side-icon)" />
@@ -103,15 +128,19 @@ export default function LevelScreen({
       <div className="mx-4 my-5 flex justify-center gap-[max(12px,calc(38*var(--u)))] lg:absolute lg:inset-x-0 lg:bottom-[calc(42*var(--u))] lg:m-0">
         <button
           type="button"
-          className={`${actionButton} border-[3px] border-line bg-cream-light hover:border-[#d2c6a9] hover:bg-white`}
+          onClick={onUndo}
+          disabled={undoDisabled}
+          className={`${actionButton} border-[3px] border-line bg-cream-light hover:border-[#d2c6a9] hover:bg-white disabled:cursor-not-allowed disabled:opacity-40`}
         >
           Rückgängig
         </button>
         <button
           type="button"
-          className={`${actionButton} bg-forest text-cream-light shadow-[0_6px_18px_-8px_rgba(47,74,59,0.6)] hover:bg-forest-dark`}
+          onClick={onConfirm}
+          disabled={confirmDisabled}
+          className={`${actionButton} bg-forest text-cream-light shadow-[0_6px_18px_-8px_rgba(47,74,59,0.6)] hover:bg-forest-dark disabled:cursor-not-allowed disabled:opacity-40`}
         >
-          Bestätigen
+          {confirmLabel}
         </button>
       </div>
 
