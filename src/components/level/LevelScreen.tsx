@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CircleHelp, Code, House } from "lucide-react";
 import LevelBackground from "./LevelBackground";
 import TaskPanel from "./TaskPanel";
@@ -22,7 +23,11 @@ type LevelScreenProps = {
   confirmDisabled?: boolean;
   wideWorkspace?: boolean;
   onDevSkip?: () => void;
+  onDevBack?: () => void;
+  devBackHref?: string;
   confirmLabel?: string;
+  taskClassName?: string;
+  showTutorialInitially?: boolean;
 };
 
 const squareButton =
@@ -55,22 +60,34 @@ export default function LevelScreen({
   confirmDisabled = false,
   wideWorkspace = false,
   onDevSkip,
+  onDevBack,
+  devBackHref,
   confirmLabel = "Bestätigen",
+  taskClassName = "",
+  showTutorialInitially = true,
 }: LevelScreenProps) {
-  const [tutorialOpen, setTutorialOpen] = useState(tutorialSteps.length > 0);
+  const router = useRouter();
+  const [tutorialOpen, setTutorialOpen] = useState(showTutorialInitially && tutorialSteps.length > 0);
 
   return (
     <main className="relative isolate flex flex-1 flex-col text-ink lg:h-dvh lg:overflow-hidden">
       <LevelBackground className="absolute inset-0 -z-10 h-full w-full" />
-      {process.env.NODE_ENV === "development" && onDevSkip && (
-        <button
+      {process.env.NODE_ENV === "development" && (onDevSkip || onDevBack || devBackHref) && (
+        <div className="fixed top-2 right-2 z-[60] flex gap-2">
+        {devBackHref && !onDevBack ? <Link href={devBackHref} onClick={event => {
+          setTutorialOpen(false);
+          if (`${window.location.pathname}${window.location.search}` === devBackHref) { event.preventDefault(); router.refresh(); }
+        }} className="rounded-lg border border-forest/30 bg-cream-light px-3 py-1.5 text-xs font-bold text-forest shadow-sm hover:bg-sage-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest">← Dev: Zurück</Link> :
+          <button type="button" disabled={!onDevBack} onClick={() => { setTutorialOpen(false); onDevBack?.(); }} className="rounded-lg border border-forest/30 bg-cream-light px-3 py-1.5 text-xs font-bold text-forest shadow-sm hover:bg-sage-light disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest">← Dev: Zurück</button>}
+        {onDevSkip && <button
           type="button"
           onClick={() => { setTutorialOpen(false); onDevSkip(); }}
           title="Aktuelles Teillevel überspringen"
-          className="fixed top-2 right-2 z-[60] rounded-lg border border-forest/30 bg-cream-light px-3 py-1.5 text-xs font-bold text-forest shadow-sm hover:bg-sage-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+          className="rounded-lg border border-forest/30 bg-cream-light px-3 py-1.5 text-xs font-bold text-forest shadow-sm hover:bg-sage-light focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
         >
           Dev: Weiter →
-        </button>
+        </button>}
+        </div>
       )}
 
       {/* Topbar */}
@@ -91,7 +108,7 @@ export default function LevelScreen({
       </h1>
 
       {/* Aufgabe */}
-      <TaskPanel className="mx-4 mt-4 lg:absolute lg:left-[calc(35*var(--u))] lg:top-[max(84px,calc(196*var(--u)))] lg:m-0 lg:h-(--lvl-panel-h) lg:w-(--lvl-panel-w)">
+      <TaskPanel className={`mx-4 mt-4 lg:absolute lg:left-[calc(35*var(--u))] lg:top-[max(84px,calc(196*var(--u)))] lg:m-0 lg:h-(--lvl-panel-h) lg:w-(--lvl-panel-w) ${taskClassName}`}>
         {task}
       </TaskPanel>
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { TreeNode } from "@/lib/search-tree";
 import catFront from "../../../public/assets/cat-front.png";
 
@@ -14,7 +14,48 @@ type SearchTreeProps = {
   pathValues?: number[];
   onSwapNodes?: (first: number, second: number) => void;
   interactionDisabled?: boolean;
+  errorValues?: number[];
+  nodeBadges?: Record<number, string>;
+  nodePopover?: { value: number; content: ReactNode };
 };
+
+function NodePopover({ svgRef, value, children }: { svgRef: RefObject<SVGSVGElement | null>; value: number; children: ReactNode }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [position, setPosition] = useState<{ left: number; top: number }>();
+  const positioned = position !== undefined;
+  useEffect(() => {
+    if (!positioned) return;
+    const input = ref.current?.querySelector<HTMLInputElement>("input");
+    input?.focus(); input?.select();
+  }, [positioned, value]);
+  useEffect(() => {
+    const svg = svgRef.current, panel = ref.current;
+    if (!svg || !panel || !svg.parentElement) return;
+    const container = svg.parentElement;
+    function measure() {
+      const anchor = svg!.querySelector(`[data-cat-value="${value}"]`);
+      if (!anchor) return;
+      const bounds = anchor.getBoundingClientRect(), outer = container.getBoundingClientRect();
+      const width = panel!.offsetWidth, height = panel!.offsetHeight;
+      const right = bounds.right - outer.left + 10;
+      const left = bounds.left - outer.left - width - 10;
+      const fitsBeside = right + width <= outer.width || left >= 0;
+      const preferred = right + width <= outer.width ? right : left;
+      const below = bounds.bottom - outer.top + 8;
+      const above = bounds.top - outer.top - height - 8;
+      setPosition({
+        left: Math.max(0, Math.min(outer.width - width, fitsBeside ? preferred : (bounds.left + bounds.width / 2 - outer.left - width / 2))),
+        top: Math.max(0, Math.min(outer.height - height, fitsBeside ? bounds.top - outer.top + 16 : below + height <= outer.height ? below : above)),
+      });
+    }
+    const frame = requestAnimationFrame(measure);
+    const observer = new ResizeObserver(measure);
+    observer.observe(container); observer.observe(panel);
+    window.addEventListener("scroll", measure, true);
+    return () => { cancelAnimationFrame(frame); observer.disconnect(); window.removeEventListener("scroll", measure, true); };
+  }, [svgRef, value]);
+  return <div ref={ref} className="balance-node-popover" role="group" aria-label={`Werte für Katze ${value}`} style={{ left: position?.left ?? 0, top: position?.top ?? 0, visibility: position ? "visible" : "hidden" }}>{children}</div>;
+}
 
 function LiquidFill({ width, height, active, delay = 0, duration = 325, radius = 0 }: {
   width: number; height: number; active: boolean; delay?: number; duration?: number; radius?: number;
@@ -56,8 +97,9 @@ function LiquidFill({ width, height, active, delay = 0, duration = 325, radius =
   </g>;
 }
 
-export default function SearchTree({ tree, onSelectNode, selectedValue, selectedValues, pathValues = [], onSwapNodes, interactionDisabled = false }: SearchTreeProps) {
+export default function SearchTree({ tree, onSelectNode, selectedValue, selectedValues, pathValues = [], onSwapNodes, interactionDisabled = false, errorValues = [], nodeBadges, nodePopover }: SearchTreeProps) {
   const patternId = useId().replaceAll(":", "");
+  const svgRef = useRef<SVGSVGElement>(null);
   const [clicked, setClicked] = useState<{ tree: TreeNode; externalValue: number | undefined; value: number }>();
   type DragState = { value: number; startX: number; startY: number; dx: number; dy: number; moved: boolean; over?: number };
   const dragRef = useRef<DragState | undefined>(undefined);
@@ -85,8 +127,8 @@ export default function SearchTree({ tree, onSelectNode, selectedValue, selected
   const viewRight = Math.max(800, rightmost + 76);
   const baseLeft = Math.min(70, leftmost - 16);
   const baseRight = Math.max(730, rightmost + 16);
-  return (
-    <svg viewBox={`${viewLeft} 0 ${viewRight - viewLeft} ${bottom + 20}`} role="group" aria-label="Kratzbaum mit nummerierten Katzen" className="challenge-tree-image">
+  return (<>
+    <svg ref={svgRef} viewBox={`${viewLeft} 0 ${viewRight - viewLeft} ${bottom + 20}`} role="group" aria-label="Kratzbaum mit nummerierten Katzen" className="challenge-tree-image">
       <title>Prüfe die Zahlen im gesamten linken und rechten Teilbaum.</title>
       <desc>{nodes.map(({ node }) => `Katze ${node.value}: links ${node.left?.value ?? "leer"}, rechts ${node.right?.value ?? "leer"}`).join(". ")}</desc>
       <defs>
@@ -117,9 +159,9 @@ export default function SearchTree({ tree, onSelectNode, selectedValue, selected
           const endY = y + 9;
           const dx = endX - startX;
           const dy = endY - startY;
-          const angle = Math.atan2(dy, dx) * 180 / Math.PI - 90;
+          const angle = Number((Math.atan2(dy, dx) * 180 / Math.PI - 90).toFixed(6));
           const visited = pathValues.some((value, index) => value === parent!.value && pathValues[index + 1] === node.value);
-          const length = Math.hypot(dx, dy);
+          const length = Number(Math.hypot(dx, dy).toFixed(6));
           return <g key={i} transform={`translate(${startX} ${startY}) rotate(${angle})`}>
             <rect x="-11" y="0" width="22" height={length} fill={`url(#${patternId})`} />
             <g transform="translate(-10 1)"><LiquidFill width={20} height={length - 2} active={visited} /></g>
@@ -142,6 +184,7 @@ export default function SearchTree({ tree, onSelectNode, selectedValue, selected
           aria-disabled={interactionDisabled}
           aria-label={`Katze ${node.value} auswählen`}
           data-cat-value={node.value}
+          data-error={errorValues.includes(node.value)}
           aria-pressed={selectedValues ? selectedValues.includes(node.value) : activeValue === node.value}
           className="tree-cat tree-cat-button"
           data-highlighted={drag?.value === node.value || drag?.over === node.value || (selectedValues ? selectedValues.includes(node.value) : activeValue === node.value)}
@@ -207,8 +250,15 @@ export default function SearchTree({ tree, onSelectNode, selectedValue, selected
             fontWeight="800" fill="#263d31"
             style={{ fontVariantNumeric: "tabular-nums" }}
           >{node.value}</text>
+          {errorValues.includes(node.value) && <circle cx={x + 43} cy={y - 122} r="7" fill="#b84d32" stroke="#fff8e9" strokeWidth="2" />}
+          {nodeBadges?.[node.value] && <g pointerEvents="none">
+            <rect x={x - 60} y={y + 22} width="120" height="24" rx="8" fill="#faf6ec" stroke="#a7b6a1" />
+            <text x={x} y={y + 38} textAnchor="middle" fontSize="13" fontWeight="700" fill="#263d31">{nodeBadges[node.value]}</text>
+          </g>}
         </g>
       ))}
     </svg>
+    {nodePopover && <NodePopover key={nodePopover.value} svgRef={svgRef} value={nodePopover.value}>{nodePopover.content}</NodePopover>}
+    </>
   );
 }

@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import LevelScreen from "./LevelScreen";
+import { useTutorialExercises } from "./TutorialExercises";
 import SearchTree from "./SearchTree";
 import FindErrorChallenge from "./FindErrorChallenge";
-import { exampleTrees, explainTree, isSearchTree } from "@/lib/search-tree";
+import { explainTree, isSearchTree } from "@/lib/search-tree";
 
 const steps = [
   "Willkommen! In Level 1 lernst du binäre Suchbäume kennen. Die Katzen tragen ihre Zahlen auf dem Halsband.",
@@ -15,6 +16,7 @@ const steps = [
 const choiceClass = "rounded-2xl border-2 border-line bg-cream-light px-6 py-3 text-lg font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 export default function SearchTreeChallenge() {
+  const { exampleTrees } = useTutorialExercises();
   const [answers, setAnswers] = useState<boolean[]>([]);
   const [phase, setPhase] = useState<"answering" | "review" | "complete">("answering");
   const [nextTask, setNextTask] = useState(false);

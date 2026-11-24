@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { categoryTrees, classifyTree, explainCategory, type TreeCategory } from "@/lib/search-tree";
+import { classifyTree, explainCategory, type TreeCategory } from "@/lib/search-tree";
 import LevelScreen from "./LevelScreen";
+import { useTutorialExercises } from "./TutorialExercises";
+import BalanceFactorChallenge from "./BalanceFactorChallenge";
 import SearchTree from "./SearchTree";
 
 const categories: { value: TreeCategory; title: string; hint: string }[] = [
@@ -21,7 +23,9 @@ const steps = [
 const buttonClass = "rounded-2xl border-2 border-line bg-cream-light px-5 py-3 font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 export default function TreeCategoryChallenge() {
+  const { categoryTrees } = useTutorialExercises();
   const [answers, setAnswers] = useState<TreeCategory[]>([]);
+  const [nextLevel, setNextLevel] = useState(false);
   const [phase, setPhase] = useState<"answering" | "review" | "complete">("answering");
   const finished = answers.length === categoryTrees.length;
   const current = Math.min(answers.length, categoryTrees.length - 1);
@@ -32,8 +36,10 @@ export default function TreeCategoryChallenge() {
     setAnswers(previous => previous.length < categoryTrees.length ? [...previous, category] : previous);
   }
 
+  if (nextLevel) return <BalanceFactorChallenge />;
+
   return <LevelScreen level={3} title="Bäume einordnen" tutorialSteps={steps} wideWorkspace
-    onDevSkip={() => { setAnswers(categoryTrees.map(classifyTree)); setPhase("complete"); }}
+    devBackHref="/tutorial?part=2" onDevSkip={() => setNextLevel(true)}
     onUndo={() => { setAnswers(previous => previous.slice(0, -1)); setPhase("answering"); }}
     undoDisabled={answers.length === 0 || phase === "complete"}
     onConfirm={() => { if (finished && phase === "answering") setPhase(correct === categoryTrees.length ? "complete" : "review"); }}
@@ -73,6 +79,7 @@ export default function TreeCategoryChallenge() {
         <p className="text-5xl" aria-hidden="true">✓</p>
         <h2 className="text-3xl font-extrabold">Alle fünf richtig eingeordnet!</h2>
         <p>Du unterscheidest jetzt Suchbaumordnung und Höhenbalance. Ein AVL-Baum erfüllt beide Bedingungen.</p>
+        <button type="button" className={buttonClass} onClick={() => setNextLevel(true)}>Weiter zu Level 4</button>
         <button type="button" className={buttonClass} onClick={reset}>Level 3 wiederholen</button>
         <Link href="/" className={buttonClass}>Zurück zum Menü</Link>
       </div>}

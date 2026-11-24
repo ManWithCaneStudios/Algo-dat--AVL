@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { errorTrees, findTreeErrors } from "@/lib/search-tree";
+import { findTreeErrors } from "@/lib/search-tree";
 import LevelScreen from "./LevelScreen";
+import { useTutorialExercises } from "./TutorialExercises";
 import SearchTree from "./SearchTree";
 import SearchPathChallenge from "./SearchPathChallenge";
 
@@ -14,6 +15,7 @@ const steps = [
 const buttonClass = "rounded-2xl border-2 border-line bg-cream-light px-6 py-3 text-lg font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 export default function FindErrorChallenge() {
+  const { errorTrees } = useTutorialExercises();
   const [answers, setAnswers] = useState<number[][]>([]);
   const [phase, setPhase] = useState<"answering" | "review" | "complete">("answering");
   const [nextTask, setNextTask] = useState(false);
@@ -54,7 +56,7 @@ export default function FindErrorChallenge() {
 
   return (
     <LevelScreen level={1} title="Fehler finden" tutorialSteps={steps} wideWorkspace
-      onDevSkip={() => setNextTask(true)}
+      devBackHref="/tutorial?part=1.1" onDevSkip={() => setNextTask(true)}
       onUndo={undo}
       undoDisabled={(answers.length === 0 && history.length === 0) || phase === "complete"}
       onConfirm={() => { if (finished && phase === "answering") setPhase(correct === errorTrees.length ? "complete" : "review"); }}

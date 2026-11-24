@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { getSearchPath, pathChallenges } from "@/lib/search-tree";
+import { getSearchPath } from "@/lib/search-tree";
 import LevelScreen from "./LevelScreen";
+import { useTutorialExercises } from "./TutorialExercises";
 import SearchTree from "./SearchTree";
 import RepairSearchChallenge from "./RepairSearchChallenge";
 
@@ -15,6 +16,7 @@ const steps = [
 const buttonClass = "rounded-2xl border-2 border-line bg-cream-light px-6 py-3 text-lg font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 
 export default function SearchPathChallenge() {
+  const { pathChallenges } = useTutorialExercises();
   const [round, setRound] = useState(0);
   const [path, setPath] = useState<number[]>([]);
   const [error, setError] = useState("");
@@ -51,7 +53,7 @@ export default function SearchPathChallenge() {
 
   return (
     <LevelScreen level={1} title="Suchpfad" tutorialSteps={steps} wideWorkspace
-      onDevSkip={() => setNextLevel(true)}
+      devBackHref="/tutorial?part=1.2" onDevSkip={() => setNextLevel(true)}
       onUndo={() => { setPath(previous => previous.slice(0, -1)); setError(""); }}
       undoDisabled={path.length === 0 || complete}
       onConfirm={confirm} confirmDisabled={path.length === 0 || complete}

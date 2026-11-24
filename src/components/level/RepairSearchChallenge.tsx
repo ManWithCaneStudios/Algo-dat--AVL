@@ -1,13 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { isSearchTree, repairChallenge, swapTreeValues, traceSearch, type TreeNode } from "@/lib/search-tree";
+import { isSearchTree, swapTreeValues, traceSearch, type TreeNode } from "@/lib/search-tree";
 import LevelScreen from "./LevelScreen";
+import { useTutorialExercises } from "./TutorialExercises";
 import SearchTree from "./SearchTree";
 import TreeCategoryChallenge from "./TreeCategoryChallenge";
 
-const steps = [
-  "Willkommen in Level 2! Finde Katze 30. Mit „Suchen“ läuft der Suchalgorithmus von oben nach unten durch den Kratzbaum: kleinere Zahl nach links, größere nach rechts.",
+const steps = (target: number) => [
+  `Willkommen in Level 2! Finde Katze ${target}. Mit „Suchen“ läuft der Suchalgorithmus von oben nach unten durch den Kratzbaum: kleinere Zahl nach links, größere nach rechts.`,
   "Aber etwas stimmt hier nicht! Beobachte zuerst, wo die Suche endet. Die gesuchte Katze kann im Baum sitzen und trotzdem nicht gefunden werden, wenn die Suchbaumordnung verletzt ist.",
   "Nach der ersten Suche kannst du eine Katze auf eine andere ziehen, um ihre Plätze zu tauschen. Tausche nur die Katzen, nicht ihre Äste. Du kannst alternativ zwei Katzen nacheinander anklicken oder mit der Tastatur auswählen.",
   "Klicke danach erneut auf „Suchen“. Erst wenn die Suchbaumordnung stimmt, kann die Suche ihren richtigen Weg gehen. Mit „Rückgängig“ nimmst du einen Tausch zurück.",
@@ -15,13 +16,14 @@ const steps = [
 type Status = "idle" | "searching" | "returning" | "failed" | "invalid" | "found";
 
 export default function RepairSearchChallenge() {
+  const { repairChallenge } = useTutorialExercises();
   const [tree, setTree] = useState(repairChallenge.tree);
   const [history, setHistory] = useState<TreeNode[]>([]);
   const [path, setPath] = useState<number[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [hasSearched, setHasSearched] = useState(false);
   const [selected, setSelected] = useState<number>();
-  const [message, setMessage] = useState("Klicke auf „Suchen“ und beobachte den Weg zu Katze 30.");
+  const [message, setMessage] = useState(`Klicke auf „Suchen“ und beobachte den Weg zu Katze ${repairChallenge.target}.`);
   const [scene, setScene] = useState(0);
   const [nextLevel, setNextLevel] = useState(false);
   const running = status === "searching" || status === "returning";
@@ -79,12 +81,12 @@ export default function RepairSearchChallenge() {
   function reset() {
     setTree(repairChallenge.tree); setHistory([]); setPath([]); setStatus("idle");
     setHasSearched(false); setSelected(undefined); setScene(previous => previous + 1);
-    setMessage("Klicke auf „Suchen“ und beobachte den Weg zu Katze 30.");
+    setMessage(`Klicke auf „Suchen“ und beobachte den Weg zu Katze ${target}.`);
   }
 
   if (nextLevel) return <TreeCategoryChallenge />;
 
-  return <LevelScreen level={2} title="Suchen & Tauschen" tutorialSteps={steps} wideWorkspace
+  return <LevelScreen level={2} title="Suchen & Tauschen" tutorialSteps={steps(target)} wideWorkspace
     confirmLabel="Suchen" confirmDisabled={running}
     onConfirm={() => { setPath([]); setSelected(undefined); setScene(previous => previous + 1); setStatus("searching"); setMessage("Die Suche startet bei der Wurzel …"); }}
     undoDisabled={running || history.length === 0}
@@ -94,7 +96,7 @@ export default function RepairSearchChallenge() {
       setPath([]); setSelected(undefined); setStatus("idle"); setScene(previous => previous + 1);
       setMessage("Letzten Tausch rückgängig gemacht. Prüfe den Baum mit „Suchen“.");
     }}
-    onDevSkip={() => setNextLevel(true)}
+    devBackHref="/tutorial?part=1.3" onDevSkip={() => setNextLevel(true)}
     task={<div className="flex flex-col gap-3 text-base leading-relaxed lg:text-[max(14px,calc(24*var(--u)))]">
       <p className="font-extrabold">2.1 · Suchen & Tauschen</p>
       <p>Finde Katze <strong>{target}</strong> mit „Suchen“.</p>
