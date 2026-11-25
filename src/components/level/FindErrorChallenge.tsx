@@ -8,9 +8,10 @@ import SearchTree from "./SearchTree";
 import SearchPathChallenge from "./SearchPathChallenge";
 
 const steps = [
-  "Jetzt bist du Katzendetektiv! In den nächsten fünf Kratzbäumen sitzen eine oder mehrere Katzen am falschen Platz.",
-  "Markiere alle Katzen, deren Zahlen die Suchbaumregel verletzen. Es können auch mehrere sein. Denke auch an ihre Vorfahren: Links müssen alle Zahlen kleiner sein, rechts alle größer.",
-  "Angeklickte Katzen bleiben markiert. Ein erneuter Klick wählt sie wieder ab. Mit „Nächster Baum“ übernimmst du deine gesamte Auswahl. Nach fünf Bäumen bestätigst du deine Antworten.",
+  "Gut gemacht! Jetzt wissen die Katzen schon besser, wie ein binärer Suchbaum aussehen muss. Allerdings passieren beim Einordnen noch immer Fehler. Manchmal landet eine Katze an der falschen Stelle und bringt die Ordnung des gesamten Suchbaums durcheinander.",
+  "Die Katzen haben versucht, einige Suchbäume selbst aufzubauen, aber dabei sind ihnen Fehler unterlaufen. Untersuche jeden Baum genau und überprüfe, ob alle Knoten die Regeln eines binären Suchbaums erfüllen. Hilf den Katzen, indem du die fehlerhaften Knoten anklickst. Es können auch mehrere sein.",
+  "Denke auch an die Vorfahren: Die Suchbaumregel gilt für den gesamten linken und rechten Teilbaum. Markiere alle falsch platzierten Katzen. Ein erneuter Klick wählt eine Katze wieder ab.",
+  "Mit „Nächster Baum“ übernimmst du deine Auswahl; beim letzten Baum heißt der Knopf „Auswahl übernehmen“. Nach fünf Bäumen prüfst du deine Antworten mit „Bestätigen“. Mit „Rückgängig“ kannst du deine Auswahl korrigieren.",
 ];
 const buttonClass = "rounded-2xl border-2 border-line bg-cream-light px-6 py-3 text-lg font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 

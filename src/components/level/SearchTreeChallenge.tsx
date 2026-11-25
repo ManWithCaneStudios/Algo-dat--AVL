@@ -8,10 +8,11 @@ import FindErrorChallenge from "./FindErrorChallenge";
 import { explainTree, isSearchTree } from "@/lib/search-tree";
 
 const steps = [
-  "Willkommen! In Level 1 lernst du binäre Suchbäume kennen. Die Katzen tragen ihre Zahlen auf dem Halsband.",
-  "Jede Katze hat höchstens zwei direkte Kinder. Im gesamten linken Teilbaum stehen nur kleinere Zahlen, im gesamten rechten Teilbaum nur größere. Diese Regel gilt für jede Katze!",
-  "Du siehst nacheinander fünf Kratzbäume. Wähle jeweils „Suchbaum“ oder „Kein Suchbaum“. Deine Auswahl führt direkt zum nächsten Baum. Die Form und die Balance sind hier noch egal.",
-  "Mit „Rückgängig“ kannst du die letzte Auswahl korrigieren. Erst nach allen fünf Bäumen klickst du auf „Bestätigen“. Dann schauen wir uns deine Antworten gemeinsam an.",
+  "Oh! Hallo! Wir könnten wirklich deine Hilfe gebrauchen! In letzter Zeit verlieren wir immer wieder Katzen, weil wir sie in unseren Bäumen nicht schnell genug finden können. Deshalb möchten wir ein besseres Ordnungssystem einführen. Dabei bin ich auf sogenannte binäre Suchbäume gestoßen.",
+  "Gleich werden dir mehrere Bäume nacheinander gezeigt. Deine Aufgabe ist es, jeweils zu entscheiden, ob es sich um einen Suchbaum handelt oder nicht. Damit du das herausfinden kannst, solltest du auf zwei wichtige Regeln achten.",
+  "Erstens: Der Baum ist binär. Jeder Knoten darf höchstens zwei Kindknoten besitzen. Bei uns ist jede Katze ein Knoten; ihren Wert findest du auf ihrem Halsband.",
+  "Zweitens: Der Baum ist geordnet. Für jede Katze gilt: Alle Werte in ihrem linken Teilbaum sind kleiner als ihr eigener Wert, alle Werte in ihrem rechten Teilbaum sind größer. Prüfe also die gesamten Teilbäume, nicht nur die direkten Kinder!",
+  "Nicht jeder binäre Baum ist automatisch ein binärer Suchbaum. Untersuche jeden der fünf Bäume und markiere ihn als „Suchbaum“ oder „Kein Suchbaum“. Deine Auswahl zeigt direkt den nächsten Baum. Mit „Rückgängig“ korrigierst du die letzte Antwort. Nach allen fünf Antworten klickst du auf „Bestätigen“.",
 ];
 const choiceClass = "rounded-2xl border-2 border-line bg-cream-light px-6 py-3 text-lg font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 

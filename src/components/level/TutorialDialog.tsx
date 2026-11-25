@@ -113,15 +113,22 @@ export default function TutorialDialog({ steps, open, onClose }: TutorialDialogP
                       className={`mx-[max(6px,calc(10*var(--u)))] h-[max(10px,calc(28*var(--u)))] w-[max(16px,calc(40*var(--u)))] rounded-sm ${done || active ? "bg-sage-light" : "bg-cream-light"}`}
                     />
                   )}
-                  <Image
-                    src={active ? "/assets/paw-active.png" : "/assets/paw.png"}
-                    alt={`Schritt ${i + 1}${active ? " (aktuell)" : done ? " (erledigt)" : ""}`}
+                  <svg
+                    viewBox="0 0 400 400"
+                    role="img"
+                    aria-label={`Schritt ${i + 1}${active ? " (aktuell)" : done ? " (erledigt)" : ""}`}
                     aria-current={active ? "step" : undefined}
-                    width={400}
-                    height={400}
-                    sizes="(min-width: 768px) 5vw, 44px"
-                    className={`size-[max(44px,calc(95*var(--u)))] transition-opacity duration-300 ${done ? "opacity-70" : ""}`}
-                  />
+                    className={`size-[max(44px,calc(95*var(--u)))] shrink-0 transition-opacity duration-300 ${done ? "opacity-70" : ""}`}
+                  >
+                    <circle cx="200" cy="200" r="200" fill={active ? "#31453b" : "#f4eee1"} />
+                    <g fill="none" stroke="black" strokeWidth="6" strokeLinecap="round" strokeLinejoin="round">
+                      <ellipse cx="164" cy="135" rx="32" ry="42" transform="rotate(-12 164 135)" />
+                      <ellipse cx="233" cy="135" rx="31" ry="42" transform="rotate(12 233 135)" />
+                      <ellipse cx="114" cy="192" rx="28" ry="39" transform="rotate(-25 114 192)" />
+                      <ellipse cx="286" cy="190" rx="28" ry="39" transform="rotate(25 286 190)" />
+                      <path d="M 200 184 C 177 184 167 215 146 239 C 128 260 112 279 117 296 C 122 320 160 309 182 303 C 194 299 203 299 217 303 C 243 312 277 321 280 295 C 282 274 264 253 248 233 C 229 210 223 184 200 184 Z" />
+                    </g>
+                  </svg>
                 </li>
               );
             })}

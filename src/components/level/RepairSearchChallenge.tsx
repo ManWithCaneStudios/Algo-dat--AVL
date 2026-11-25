@@ -8,10 +8,11 @@ import SearchTree from "./SearchTree";
 import TreeCategoryChallenge from "./TreeCategoryChallenge";
 
 const steps = (target: number) => [
-  `Willkommen in Level 2! Finde Katze ${target}. Mit „Suchen“ läuft der Suchalgorithmus von oben nach unten durch den Kratzbaum: kleinere Zahl nach links, größere nach rechts.`,
-  "Aber etwas stimmt hier nicht! Beobachte zuerst, wo die Suche endet. Die gesuchte Katze kann im Baum sitzen und trotzdem nicht gefunden werden, wenn die Suchbaumordnung verletzt ist.",
-  "Nach der ersten Suche kannst du eine Katze auf eine andere ziehen, um ihre Plätze zu tauschen. Tausche nur die Katzen, nicht ihre Äste. Du kannst alternativ zwei Katzen nacheinander anklicken oder mit der Tastatur auswählen.",
-  "Klicke danach erneut auf „Suchen“. Erst wenn die Suchbaumordnung stimmt, kann die Suche ihren richtigen Weg gehen. Mit „Rückgängig“ nimmst du einen Tausch zurück.",
+  "Die Katzen wurden bereits in Suchbäumen einsortiert. Trotzdem kommt es noch vor, dass eine Katze nicht gefunden werden kann, obwohl sie sich im Baum befindet. Offenbar haben sich beim Aufbau Fehler eingeschlichen.",
+  `Suche Katze ${target}, indem du auf „Suchen“ klickst und dem animierten Suchpfad folgst. Die Suche beginnt bei der Wurzel: Ist die gesuchte Zahl kleiner, geht sie nach links, ist sie größer, nach rechts.`,
+  "Wenn die Suche fehlschlägt, untersuche den Baum und finde heraus, welche Katzen falsch sitzen. Nach der ersten Suche kannst du eine Katze auf eine andere ziehen, um ihre Plätze zu tauschen. Die Äste bleiben dabei stehen. Alternativ kannst du die beiden Katzen nacheinander anklicken.",
+  "Korrigiere so die Positionen, bis die Regeln des binären Suchbaums wieder erfüllt sind. Klicke erneut auf „Suchen“, um deinen Tausch zu überprüfen. Mit „Rückgängig“ kannst du einen Tausch zurücknehmen.",
+  "Die Aufgabe ist gelöst, wenn die gesuchte Katze gefunden wird und die Suchbaumordnung im gesamten Baum stimmt. Schau deshalb nicht nur auf den Suchpfad, sondern prüfe alle Katzen!",
 ];
 type Status = "idle" | "searching" | "returning" | "failed" | "invalid" | "found";
 

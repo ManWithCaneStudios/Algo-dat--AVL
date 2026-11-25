@@ -47,6 +47,7 @@ export function createExerciseSet(seed: number) {
       return { tree: generated, manualValues };
     }),
     rotationRounds: rotationTemplates.map(tree => variant(tree, false).tree),
+    rightRotationRounds: rotationTemplates.map(tree => variant(tree, true).tree),
   };
 }
 

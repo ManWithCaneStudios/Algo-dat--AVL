@@ -10,11 +10,11 @@ import SearchTree from "./SearchTree";
 import LeftRotationChallenge from "./LeftRotationChallenge";
 
 const steps = [
-  "Der Balancefaktor beschreibt das Gleichgewicht an einer Katze: BF = Höhe des rechten Teilbaums − Höhe des linken Teilbaums. Wir rechnen also immer rechts minus links.",
-  "Ein leerer Teilbaum hat Höhe 0. Ein Blatt hat Höhe 1. Die Höhe eines größeren Teilbaums ist 1 plus die größere Höhe seiner beiden Kinder. Zähle die Ebenen, nicht die Katzen!",
-  "BF 0 bedeutet: beide Seiten gleich hoch. Bei +1 ist rechts eine Ebene mehr, bei −1 links. Nur −1, 0 und +1 erfüllen die AVL-Balancebedingung. Bei +2 oder −2 ist die Katze unausgeglichen.",
-  "Rechne von unten nach oben. Klicke eine Katze an: Du startest direkt bei Höhe links. Nach jeder Zahl springst du ins nächste Feld. Ein vollständiger Balancefaktor übernimmt die Rechnung automatisch. Danach werden ihre Eltern freigegeben. Die Rechnung wird noch nicht auf Richtigkeit geprüft.",
-  "Nach der letzten Rechnung wechselst du automatisch zur Markierung und wählst alle unausgeglichenen Katzen aus. Jeder Baum hat mindestens eine unausgeglichene Katze. Erst „Bestätigen“ prüft Rechnungen und Markierungen. Über drei Bäume bekommst du schrittweise weniger Hilfe.",
+  "Um herauszufinden, ob ein Suchbaum die AVL-Balancebedingung erfüllt, nutzen die Katzen den Balancefaktor. Er zeigt an, wie sich die Höhen des linken und rechten Teilbaums eines Knotens unterscheiden. Mit seiner Hilfe können unausgeglichene Stellen im Baum schnell erkannt werden.",
+  "In diesem Level lernst du, Teilbaumhöhen zu bestimmen und daraus Balancefaktoren zu berechnen. Zähle die Ebenen auf dem längsten Weg im Teilbaum: Ein leerer Teilbaum hat Höhe 0, eine einzelne Katze Höhe 1. Die Formel lautet: Balancefaktor = Höhe rechts − Höhe links.",
+  "Zum Beispiel: Rechts ist der Teilbaum zwei Ebenen hoch und links eine Ebene. Dann ist BF = 2 − 1 = +1. Bei 0 sind beide Seiten gleich hoch, bei −1 ist links eine Ebene mehr. Erlaubt sind −1, 0 und +1. Ein Suchbaum erfüllt die AVL-Balancebedingung nur, wenn das an jeder Katze gilt.",
+  "Bestimme für die vorgegebenen Katzen die Höhe des linken und rechten Teilbaums und berechne den Balancefaktor. Arbeite von unten zur Wurzel. Klicke eine freigegebene Katze an: Die Eingabefelder erscheinen direkt daneben. Nach jeder Zahl springst du ins nächste Feld; die vollständige Rechnung wird automatisch übernommen. Manche Werte sind schon vorbereitet.",
+  "Nachdem die geforderten Balancefaktoren eingetragen wurden, wechselst du automatisch zum Markieren. Untersuche den gesamten Baum und markiere alle Katzen mit einem BF über +1 oder unter −1. In jedem der drei Bäume gibt es mindestens eine. „Bestätigen“ prüft Rechnungen und Markierungen. Ab den Rotationsleveln werden die Werte automatisch berechnet.",
 ];
 const button = "rounded-xl border-2 border-line bg-cream-light px-4 py-2 text-sm font-bold hover:border-forest hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest disabled:cursor-not-allowed disabled:opacity-40";
 type Entry = { left: string; right: string; bf: string; saved: boolean };

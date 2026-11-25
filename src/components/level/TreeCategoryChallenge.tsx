@@ -15,10 +15,11 @@ const categories: { value: TreeCategory; title: string; hint: string }[] = [
 ];
 const labels = Object.fromEntries(categories.map(category => [category.value, category.title]));
 const steps = [
-  "In Level 3 lernst du den AVL-Baum kennen. Du siehst fünf Kratzbäume und ordnest jeden einer von drei Kategorien zu.",
-  "Prüfe zuerst die Suchbaumordnung. Sind nicht alle kleineren Zahlen links und alle größeren rechts, gehört der Baum zur Kategorie „Binärer Baum ohne Suchbaumordnung“.",
-  "Stimmt die Ordnung, prüfst du zusätzlich die Höhen: Bei einem AVL-Baum dürfen sich die Höhen des linken und rechten Teilbaums an keiner Katze um mehr als 1 unterscheiden. Ein Höhenunterschied von 1 ist also erlaubt!",
-  "Stimmt die Ordnung, aber die Höhen unterscheiden sich irgendwo um mehr als 1, ist es ein unausgeglichener Suchbaum. Wähle für jeden Baum eine Kategorie. Nach fünf Antworten bestätigst du; mit „Rückgängig“ korrigierst du die letzte Auswahl.",
+  "Die Katzen haben gelernt, Suchbäume korrekt aufzubauen. Allerdings sind nicht alle Suchbäume gleich gut zum Suchen geeignet. Manche Suchbäume werden mit der Zeit unausgeglichen, wodurch die Suche längere Wege brauchen kann. Deshalb verwenden wir AVL-Bäume, die zusätzlich auf eine ausgewogene Struktur achten.",
+  "Untersuche die folgenden Bäume und entscheide, um welche Art von Baum es sich handelt. Achte nicht nur auf die Suchbaumregeln, sondern auch darauf, ob der Baum ausgeglichen ist. Hilf den Katzen dabei, jeden Baum der richtigen Kategorie zuzuordnen.",
+  "Prüfe zuerst die Ordnung: Sind nicht alle Werte im linken Teilbaum kleiner und im rechten größer als der jeweilige Knoten, wählst du „Binärer Baum ohne Suchbaumordnung“.",
+  "Stimmt die Ordnung, prüfst du die Höhen. Bei einem „Gültigen AVL-Baum“ unterscheiden sich die Höhen des linken und rechten Teilbaums an jeder Katze um höchstens eine Ebene. Wird diese Grenze irgendwo überschritten, ist es ein „Unausgeglichener Suchbaum“.",
+  "Wähle für jeden der fünf Bäume die passende Kategorie. Nach deiner Auswahl erscheint direkt der nächste Baum. Mit „Rückgängig“ korrigierst du die letzte Zuordnung. Nach allen fünf Antworten klickst du auf „Bestätigen“.",
 ];
 const buttonClass = "rounded-2xl border-2 border-line bg-cream-light px-5 py-3 font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 

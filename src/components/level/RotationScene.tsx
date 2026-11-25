@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import type { TreeNode } from "@/lib/search-tree";
-import { attachBranch, liftRightChild, type LeftRotation, type BranchSide } from "@/lib/rotation";
+import { attachBranch, liftLeftChild, liftRightChild, type LeftRotation, type BranchSide, type RotationDirection } from "@/lib/rotation";
 import { nodeFacts } from "@/lib/tutorial-exercises";
 import catFront from "../../../public/assets/cat-front.png";
 
@@ -27,8 +27,8 @@ function edges(tree: TreeNode | undefined): [number, number][] {
   return [...(tree.left ? [[tree.value, tree.left.value] as [number, number], ...edges(tree.left)] : []), ...(tree.right ? [[tree.value, tree.right.value] as [number, number], ...edges(tree.right)] : [])];
 }
 
-export default function RotationScene({ tree, shelf, selectedValue, locked, rotationDisabled = false, onRotate, onAttach, onMessage }: {
-  tree: TreeNode; shelf?: TreeNode; selectedValue?: number; locked: boolean; rotationDisabled?: boolean;
+export default function RotationScene({ tree, shelf, selectedValue, locked, rotationDisabled = false, direction = "left", onRotate, onAttach, onMessage }: {
+  tree: TreeNode; shelf?: TreeNode; selectedValue?: number; locked: boolean; rotationDisabled?: boolean; direction?: RotationDirection;
   onRotate: (plan: LeftRotation) => void; onAttach: (tree: TreeNode, parent: number, side: BranchSide) => void; onMessage: (message: string) => void;
 }) {
   const id = useId().replaceAll(":", "");
@@ -41,6 +41,9 @@ export default function RotationScene({ tree, shelf, selectedValue, locked, rota
   const [progress, setProgress] = useState(0);
   const [settling, setSettling] = useState(false);
   const [selected, setSelected] = useState<number | undefined>(selectedValue);
+  const lift = direction === "left" ? liftRightChild : liftLeftChild;
+  const dragDirection = direction === "left" ? "links" : "rechts";
+  const childName = direction === "left" ? "rechte" : "linke";
   useEffect(() => () => cancelAnimationFrame(frameRef.current), []);
 
   const beforeTree = preview?.before ?? tree;
@@ -56,7 +59,7 @@ export default function RotationScene({ tree, shelf, selectedValue, locked, rota
     let x = start.x + (end.x - start.x) * progress;
     let y = start.y + (end.y - start.y) * progress;
     // Separate arcs make the rising child and descending parent readable.
-    if (preview?.rotation?.pivot === value) x -= Math.sin(progress * Math.PI) * 35;
+    if (preview?.rotation?.pivot === value) x += Math.sin(progress * Math.PI) * (direction === "left" ? -35 : 35);
     if (preview?.rotation?.lifted === value) y -= Math.sin(progress * Math.PI) * 60;
     if (!preview && drag?.kind === "branch" && layout(shelf, true).has(value)) { x += drag.delta.x; y += drag.delta.y; }
     points.set(value, { ...original, x, y });
@@ -104,12 +107,12 @@ export default function RotationScene({ tree, shelf, selectedValue, locked, rota
       dragRef.current = next; setDrag(next);
     } else {
       if (rotationDisabled) { onMessage("Pro Baum ist nur eine Rotation erlaubt. Nutze „Rückgängig“, um einen neuen Versuch zu starten."); return; }
-      const plan = liftRightChild(tree, value);
-      if (!plan) { onMessage("Für eine Linksrotation ziehst du ein rechtes Kind nach links oben. Sein Elternknoten ist der Drehpunkt."); return; }
+      const plan = lift(tree, value);
+      if (!plan) { onMessage(`Für diese Rotation ziehst du das ${childName} Kind nach ${dragDirection} oben. Sein Elternknoten ist der Drehpunkt.`); return; }
       dragRef.current = { kind: "rotate", value, start: origin, delta: { x: 0, y: 0 }, plan };
       setPreview({ before: tree, after: plan.tree, afterShelf: plan.shelf, rotation: plan });
       setProgress(0); progressRef.current = 0;
-      onMessage(`Katze ${plan.pivot} ist der Drehpunkt. Ziehe Katze ${value} nach links oben auf ihren Platz.`);
+      onMessage(`Katze ${plan.pivot} ist der Drehpunkt. Ziehe Katze ${value} nach ${dragDirection} oben auf ihren Platz.`);
     }
     event.currentTarget.setPointerCapture(event.pointerId);
   }
@@ -153,20 +156,20 @@ export default function RotationScene({ tree, shelf, selectedValue, locked, rota
     } else if (!cancelled && progressRef.current >= .55) {
       animate(1, () => onRotate(current.plan!));
     } else {
-      animate(0, () => onMessage("Noch keine Rotation: Ziehe das rechte Kind weiter nach links oben. Der Baum ist wieder in seiner Ausgangslage."));
+      animate(0, () => onMessage(`Noch keine Rotation: Ziehe das ${childName} Kind weiter nach ${dragDirection} oben. Der Baum ist wieder in seiner Ausgangslage.`));
     }
   }
   function keyboard(value: number) {
     if (locked || settling || dragRef.current) return;
     if (shelf) { if (value === shelf.value) { setSelected(value); onMessage("Wähle mit Tab einen freien linken oder rechten Ast und setze den Teilbaum dort mit Enter ein."); } return; }
     if (rotationDisabled) { onMessage("Pro Baum ist nur eine Rotation erlaubt. Nutze „Rückgängig“ für einen neuen Versuch."); return; }
-    const plan = liftRightChild(tree, value);
-    if (!plan) { onMessage("Diese Katze ist kein rechtes Kind. Wähle das rechte Kind des Drehpunkts."); return; }
+    const plan = lift(tree, value);
+    if (!plan) { onMessage(`Wähle das ${childName} Kind des Drehpunkts.`); return; }
     setSelected(value); setPreview({ before: tree, after: plan.tree, afterShelf: plan.shelf, rotation: plan });
     animate(1, () => onRotate(plan));
   }
 
-  return <svg ref={svgRef} viewBox={`0 0 1100 ${viewHeight}`} className="rotation-scene" role="group" aria-label="Kratzbaum für Linksrotation" data-preview-progress={progress.toFixed(3)}>
+  return <svg ref={svgRef} viewBox={`0 0 1100 ${viewHeight}`} className="rotation-scene" role="group" aria-label={`Kratzbaum für ${direction === "left" ? "Linksrotation" : "Rechtsrotation"}`} data-preview-progress={progress.toFixed(3)}>
     <defs>
       <pattern id={`${id}-rope`} width="22" height="14" patternUnits="userSpaceOnUse"><rect width="22" height="14" fill="#e7bc8e" /><path d="M0 3 Q11 13 22 3" fill="none" stroke="#c7986b" strokeWidth="1.2" /></pattern>
       <filter id={`${id}-glow`} x="-40%" y="-30%" width="180%" height="160%"><feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#e8b72e" /></filter>
@@ -213,7 +216,7 @@ export default function RotationScene({ tree, shelf, selectedValue, locked, rota
         role="button" tabIndex={canDrag ? 0 : -1} aria-disabled={!canDrag} aria-label={onShelf && shelf?.value === value ? `Ast ab Katze ${value} ziehen` : `Katze ${value} rotieren`}
         style={{ cursor: canDrag ? "grab" : "default", touchAction: "none" }}
         onPointerDown={event => start(value, event)} onPointerMove={move} onPointerUp={event => release(event)} onPointerCancel={event => release(event, true)}
-        onKeyDown={event => { if (event.key === "Enter" || event.key === "ArrowLeft" || event.key === " ") { event.preventDefault(); keyboard(value); } }}>
+        onKeyDown={event => { if (event.key === "Enter" || event.key === (direction === "left" ? "ArrowLeft" : "ArrowRight") || event.key === " ") { event.preventDefault(); keyboard(value); } }}>
         <rect x="-58" y="-130" width="116" height="150" fill="transparent" />
         <image href={catFront.src} x="-50" y="-126" width="100" height="128" filter={highlighted ? `url(#${id}-glow)` : undefined} />
         <rect x="-55" width="110" height="18" rx="9" fill="#e7bc8e" stroke="#44372c" strokeWidth="2" />

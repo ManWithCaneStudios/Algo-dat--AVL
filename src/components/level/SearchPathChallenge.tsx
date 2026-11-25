@@ -9,9 +9,10 @@ import SearchTree from "./SearchTree";
 import RepairSearchChallenge from "./RepairSearchChallenge";
 
 const steps = [
-  "Jetzt suchen wir wie ein Algorithmus! Du bekommst eine Zahl und verfolgst den Suchpfad durch den Kratzbaum. Beginne immer bei der Wurzel, der obersten Katze.",
-  "Vergleiche die gesuchte Zahl mit der aktuellen Katze: Ist sie kleiner, gehst du zum linken Kind. Ist sie größer, gehst du zum rechten Kind. Klicke immer nur die nächste Katze auf diesem Weg an.",
-  "Sind beide Zahlen gleich, endet die Suche. Du kannst auch falsche Wege anklicken: Erst mit „Bestätigen“ wird dein vollständiger Pfad geprüft. Mit „Rückgängig“ nimmst du einen Schritt zurück.",
+  "Die Katzen sind nun ordentlich einsortiert. Jetzt müssen wir lernen, sie schnell wiederzufinden. Suche die vorgegebene Zahl im Suchbaum und folge dabei dem richtigen Pfad.",
+  "Jetzt wirst du versuchen, eine bestimmte Katze so zu finden, wie es auch ein Computer tun würde. Dazu gehst du Schritt für Schritt durch den Suchbaum. Beginne bei der Wurzel, also der obersten Katze.",
+  "Bei jedem Knoten entscheidest du, ob du nach links oder nach rechts weitergehen musst: Ist die gesuchte Zahl kleiner als die aktuelle Zahl, gehst du zum linken Kind. Ist sie größer, gehst du zum rechten Kind. Sind beide Zahlen gleich, hast du die Katze gefunden und die Suche endet.",
+  "Wähle die Katzen auf deinem Weg in der richtigen Reihenfolge aus. Am Ziel klickst du auf „Bestätigen“. Erst dann prüfen wir den gesamten Pfad. Falls du falsch abgebogen bist, kannst du mit „Rückgängig“ einen Schritt zurücknehmen.",
 ];
 const buttonClass = "rounded-2xl border-2 border-line bg-cream-light px-6 py-3 text-lg font-bold transition hover:border-forest hover:bg-white focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-forest";
 

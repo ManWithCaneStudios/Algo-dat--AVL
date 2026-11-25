@@ -1,6 +1,7 @@
 import type { TreeNode } from "./search-tree";
 
 export type LeftRotation = { tree: TreeNode; shelf?: TreeNode; pivot: number; lifted: number };
+export type RotationDirection = "left" | "right";
 
 export function parentOf(tree: TreeNode, value: number): TreeNode | undefined {
   if (tree.left?.value === value || tree.right?.value === value) return tree;
@@ -17,6 +18,17 @@ export function liftRightChild(tree: TreeNode, value: number): LeftRotation | un
     return { ...node, ...(node.left ? { left: replace(node.left) } : {}), ...(node.right ? { right: replace(node.right) } : {}) };
   }
   return { tree: replace(tree), shelf: lifted.left, pivot: parent.value, lifted: value };
+}
+
+export function liftLeftChild(tree: TreeNode, value: number): LeftRotation | undefined {
+  const parent = parentOf(tree, value);
+  if (!parent || parent.left?.value !== value) return;
+  const lifted = parent.left;
+  function replace(node: TreeNode): TreeNode {
+    if (node.value === parent!.value) return { ...lifted, right: { ...parent!, left: undefined } };
+    return { ...node, ...(node.left ? { left: replace(node.left) } : {}), ...(node.right ? { right: replace(node.right) } : {}) };
+  }
+  return { tree: replace(tree), shelf: lifted.right, pivot: parent.value, lifted: value };
 }
 
 export type BranchSide = "left" | "right";
